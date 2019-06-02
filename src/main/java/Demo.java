@@ -56,12 +56,14 @@ public class Demo {
             // init transaction service with net parameters
             TransactionService transactionService = TransactionService.of(netParams);
 
+            NodeInfo nodeInfo = (new Api(netParams)).getInfo();
+            KeyProvider keyProvider = KeyProvider.of(privateKey.toWif());
             // init transaction configuration
-            TransactionConfiguration trxConfig = new TransactionConfiguration(1000000, publicKey,
-                    KeyProvider.of(privateKey.toWif()));
+            TransactionConfiguration trxConfig =  TransactionConfiguration.of(nodeInfo, 1000000, publicKey );
 
             // push this action to the node and get back an transaction
-            TransactionData txData = transactionService.push(trxConfig, Arrays.asList(transferFungibleAction));
+            TransactionData txData = transactionService.push(trxConfig, Arrays.asList(transferFungibleAction), false,
+                                                             keyProvider);
             System.out.println(txData.getTrxId());
         } catch (ApiResponseException ex) {
             System.out.println(ex.getRaw());
